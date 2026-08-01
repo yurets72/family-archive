@@ -254,6 +254,12 @@ window.onclick=function(e){
 
     }
 
+    if(e.target===treeModal){
+
+        closeTree();
+
+    }
+
 }
 
 render();
@@ -390,12 +396,147 @@ document.getElementById("treeModal");
 const treeContainer =
 document.getElementById("treeContainer");
 
+let treeRootId = 1;
+
+function collectAncestors(ids, level, levels){
+
+    if(!ids.length) return;
+
+    const unique=[...new Set(ids)];
+
+    levels[level]=(levels[level]||[]).concat(unique);
+
+    let parents=[];
+
+    unique.forEach(id=>{
+
+        const p=personById(id);
+
+        if(p){
+
+            if(p.father) parents.push(p.father);
+
+            if(p.mother) parents.push(p.mother);
+
+        }
+
+    });
+
+    if(parents.length) collectAncestors(parents, level-1, levels);
+
+}
+
+function collectDescendants(ids, level, levels){
+
+    if(!ids.length) return;
+
+    const unique=[...new Set(ids)];
+
+    levels[level]=(levels[level]||[]).concat(unique);
+
+    let children=[];
+
+    unique.forEach(id=>{
+
+        const p=personById(id);
+
+        if(p && p.children && p.children.length) children=children.concat(p.children);
+
+    });
+
+    if(children.length) collectDescendants(children, level+1, levels);
+
+}
+
+function buildLevels(rootId){
+
+    const levels={};
+
+    levels[0]=[rootId];
+
+    const p=personById(rootId);
+
+    if(p){
+
+        let parents=[];
+
+        if(p.father) parents.push(p.father);
+
+        if(p.mother) parents.push(p.mother);
+
+        if(parents.length) collectAncestors(parents, -1, levels);
+
+        if(p.children && p.children.length) collectDescendants(p.children, 1, levels);
+
+    }
+
+    return levels;
+
+}
+
+function treeNodeHtml(id, rootId){
+
+    const p=personById(id);
+
+    if(!p) return "";
+
+    const isRoot = id===rootId ? " root" : "";
+
+    return `
+
+<div class="tree-node${isRoot}">
+
+<div class="tree-node-main" onclick="renderTree(${id})">
+
+<div class="tree-node-name">${p.name}</div>
+
+<div class="tree-node-life">${p.life||""}</div>
+
+</div>
+
+<button class="tree-node-info" onclick="event.stopPropagation(); openPerson(${id})">ⓘ</button>
+
+</div>
+
+`;
+
+}
+
+function renderTree(rootId){
+
+    treeRootId=rootId;
+
+    const levels=buildLevels(rootId);
+
+    const keys=Object.keys(levels).map(Number).sort((a,b)=>a-b);
+
+    let html="";
+
+    keys.forEach(lvl=>{
+
+        const ids=[...new Set(levels[lvl])];
+
+        html+=`<div class="tree-row">`;
+
+        ids.forEach(id=>{
+
+            html+=treeNodeHtml(id, rootId);
+
+        });
+
+        html+=`</div>`;
+
+    });
+
+    html+=`<div class="tree-hint">Клик по карточке — сделать её центром древа. Значок ⓘ — открыть подробную карточку.</div>`;
+
+    treeContainer.innerHTML=html;
+
+}
+
 function showTree(){
 
-treeContainer.innerHTML = `
-<h2>🌳 Древо семьи</h2>
-<p>Версия v0.8 находится в разработке...</p>
-`;
+renderTree(treeRootId);
 
 treeModal.style.display="flex";
 

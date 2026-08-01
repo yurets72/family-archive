@@ -252,3 +252,119 @@ transform:translateY(-2px);
 background:#5b3f2d;
 
 }
+
+/* ---- Tree modal (was missing — this is why the button looked unresponsive) ---- */
+
+.tree-modal{
+display:none;
+position:fixed;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.55);
+flex-direction:column;
+justify-content:center;
+align-items:center;
+padding:20px;
+z-index:900;
+gap:0;
+}
+
+.tree-header{
+width:100%;
+max-width:900px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:16px 24px;
+background:#47372d;
+color:#fff;
+border-radius:18px 18px 0 0;
+}
+
+.tree-header h2{
+font-size:19px;
+}
+
+.tree-header button{
+background:none;
+border:none;
+color:#fff;
+font-size:26px;
+cursor:pointer;
+line-height:1;
+}
+
+.tree-container{
+background:#fff;
+width:100%;
+max-width:900px;
+max-height:70vh;
+overflow:auto;
+border-radius:0 0 18px 18px;
+padding:24px;
+}
+
+.tree-row{
+display:flex;
+justify-content:center;
+flex-wrap:wrap;
+gap:14px;
+margin-bottom:22px;
+}
+
+.tree-node{
+background:#f8f5ef;
+border:1px solid #e2d9c9;
+border-radius:12px;
+padding:10px 26px 10px 14px;
+min-width:150px;
+max-width:210px;
+position:relative;
+transition:.15s;
+}
+
+.tree-node:hover{
+box-shadow:0 4px 12px rgba(0,0,0,.1);
+}
+
+.tree-node-main{
+cursor:pointer;
+}
+
+.tree-node-name{
+font-weight:bold;
+font-size:14px;
+}
+
+.tree-node-life{
+font-size:12px;
+color:#777;
+margin-top:2px;
+}
+
+.tree-node.root{
+border-color:#8d6c4d;
+box-shadow:0 0 0 2px #8d6c4d inset;
+background:#fff3e6;
+}
+
+.tree-node-info{
+position:absolute;
+top:6px;
+right:6px;
+background:none;
+border:none;
+color:#8d6c4d;
+font-size:14px;
+cursor:pointer;
+padding:0;
+}
+
+.tree-hint{
+text-align:center;
+color:#999;
+font-size:12px;
+margin-top:6px;
+}
